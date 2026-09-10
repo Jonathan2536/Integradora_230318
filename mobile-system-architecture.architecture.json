@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Mobile Platform Architecture",
+    "output": "mobile-system-architecture.html",
+    "quality_profile": "showcase",
+    "viewBox": [1120, 760]
+  },
+  "components": [
+    { "id": "mobile-app", "type": "frontend", "label": "Flutter Mobile App", "sublabel": "iOS / Android client", "pos": [55, 285], "size": [155, 68], "tag": "Mobile client" },
+    { "id": "keycloak", "type": "security", "label": "Keycloak", "sublabel": "OIDC authentication", "pos": [280, 120], "size": [150, 68], "tag": "Authentication layer" },
+    { "id": "fastapi", "type": "backend", "label": "FastAPI REST API", "sublabel": "HTTPS / JSON", "pos": [490, 285], "size": [165, 68], "tag": "API layer" },
+    { "id": "postgresql", "type": "database", "label": "PostgreSQL", "sublabel": "relational data", "pos": [755, 185], "size": [150, 66], "tag": "Data layer" },
+    { "id": "mongodb", "type": "database", "label": "MongoDB", "sublabel": "document data", "pos": [755, 370], "size": [150, 66], "tag": "Data layer" },
+    { "id": "maps", "type": "external", "label": "Leaflet / Maps Service", "sublabel": "map tiles and geospatial UI", "pos": [55, 500], "size": [185, 66], "tag": "External service" },
+    { "id": "docker", "type": "cloud", "label": "Docker", "sublabel": "local containers", "pos": [70, 650], "size": [135, 60], "tag": "Development" },
+    { "id": "compose", "type": "cloud", "label": "Docker Compose", "sublabel": "local service stack", "pos": [290, 650], "size": [155, 60], "tag": "Development" },
+    { "id": "git", "type": "external", "label": "Git", "sublabel": "local source control", "pos": [540, 650], "size": [125, 60], "tag": "Source control" },
+    { "id": "github", "type": "external", "label": "GitHub", "sublabel": "remote repository", "pos": [760, 650], "size": [140, 60], "tag": "Source control" }
+  ],
+  "boundaries": [
+    { "kind": "security-group", "label": "Public client trust boundary", "wraps": ["mobile-app"], "pad": 28 },
+    { "kind": "security-group", "label": "Application trust boundary", "wraps": ["keycloak", "fastapi", "postgresql", "mongodb"], "pad": 34 },
+    { "kind": "region", "label": "Developer workstation boundary", "wraps": ["docker", "compose", "git"], "pad": 30 }
+  ],
+  "connections": [
+    { "id": "mobile-auth", "from": "mobile-app", "to": "keycloak", "label": "OIDC login / token", "variant": "security" },
+    { "id": "mobile-api", "from": "mobile-app", "to": "fastapi", "label": "HTTPS REST + bearer token", "variant": "emphasis", "labelAt": [350, 375] },
+    { "id": "api-keycloak", "from": "fastapi", "to": "keycloak", "label": "validate JWT", "variant": "security" },
+    { "id": "api-postgres", "from": "fastapi", "to": "postgresql", "label": "SQL read / write", "variant": "emphasis" },
+    { "id": "api-mongo", "from": "fastapi", "to": "mongodb", "label": "document read / write", "variant": "emphasis", "labelAt": [705, 367] },
+    { "id": "mobile-maps", "from": "mobile-app", "to": "maps", "label": "map tiles / geospatial UI", "variant": "dashed", "fromSide": "bottom", "toSide": "top" },
+    { "id": "docker-compose", "from": "docker", "to": "compose", "label": "container runtime", "variant": "dashed", "labelAt": [248, 724] },
+    { "id": "compose-api", "from": "compose", "to": "fastapi", "label": "runs local stack", "variant": "dashed" },
+    { "id": "git-github", "from": "git", "to": "github", "label": "push / pull", "variant": "dashed" },
+    { "id": "github-compose", "from": "github", "to": "compose", "label": "source checkout", "variant": "dashed", "fromSide": "top", "toSide": "top", "via": [[830, 615], [367.5, 615]], "labelAt": [600, 605] }
+  ],
+  "cards": [
+    { "dot": "cyan", "title": "Primary request path", "items": ["Flutter authenticates with Keycloak, then calls the FastAPI REST API with a bearer token.", "FastAPI is the only application path to PostgreSQL and MongoDB."] },
+    { "dot": "amber", "title": "Trust boundaries", "items": ["Mobile and map traffic cross public trust boundaries.", "Identity, API, and data services are grouped behind the application boundary."] },
+    { "dot": "emerald", "title": "Development and source control", "items": ["Docker Compose assembles the local service stack.", "Git synchronizes source changes with GitHub."] }
+  ]
+}
