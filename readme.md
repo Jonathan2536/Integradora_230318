@@ -1,12 +1,17 @@
+<p align="center">
+  <img src="https://lh3.googleusercontent.com/d/1EVoNQAIppYUD9L_saWyLe_8Zydiw4y1u" alt="UTXJ Logo" width="400"/>
+</p>
+
 # Integradora_230318
 
 Proyecto de arquitectura de sistema móvil / diagrama de infraestructura visual.
 
-## GitHub Pages
+## GitHub Pages (Diagrama de arquitectura)
 
-La vista pública del diagrama está disponible en:
+La vista pública del diagrama de Arquitectura está disponible en:
 
-https://jonathan2536.github.io/Integradora_230318/
+[![Ver diagrama en GitHub Pages](https://img.shields.io/badge/Arquitectura%20del%20sistema-Open%20GitHub%20Pages-00C2FF?style=for-the-badge)](https://jonathan2536.github.io/Integradora_230318/)
+
 
 ## Descripción
 
