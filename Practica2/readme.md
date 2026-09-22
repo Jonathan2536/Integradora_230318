@@ -2,7 +2,7 @@
 	<img src="https://lh3.googleusercontent.com/d/1EVoNQAIppYUD9L_saWyLe_8Zydiw4y1u" alt="UTXJ Logo" width="400"/>
 </p>
 
-# Práctica 02 - Boceto de Arquitectura con Archify
+# Práctica 02 - Diagrama de Arquitectura con Archify
 
 Diagrama de arquitectura de un sistema móvil elaborado con Archify.
 
