@@ -1,170 +1,102 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#f4f7f4" />
-  <title>Business Model Canvas · Spotify</title>
+  <meta name="theme-color" content="#f3f6f2" />
+  <meta name="description" content="Business Model Canvas interactivo de Spotify: explora sus nueve bloques." />
+  <title>Spotify · Business Model Canvas</title>
   <style>
-    :root {
-      color-scheme: light;
-      --ink: #17211d;
-      --muted: #68756e;
-      --line: #dce5df;
-      --green: #1ed760;
-      --green-dark: #087b3b;
-      --paper: #f4f7f4;
-      --card: #fff;
-      --shadow: 0 18px 45px rgb(24 56 38 / 18%), 0 3px 10px rgb(24 56 38 / 9%);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-width: 320px;
-      color: var(--ink);
-      background:
-        radial-gradient(ellipse at 7% 0%, rgb(30 215 96 / 10%), transparent 35rem),
-        var(--paper);
-    }
-    .page { width: min(1600px, 100%); margin: 0 auto; padding: clamp(20px, 3vw, 46px); }
-    header { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 26px; }
-    .eyebrow { color: var(--green-dark); font-size: .72rem; font-weight: 800; letter-spacing: .17em; text-transform: uppercase; }
-    h1 { margin: 7px 0 0; font-size: clamp(1.8rem, 4vw, 3.15rem); letter-spacing: -.055em; line-height: 1; }
-    h1 span { color: var(--green-dark); }
-    .hint { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: .85rem; }
-    .hint-mark { display: grid; width: 25px; height: 25px; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--green-dark); font-size: .8rem; font-weight: 800; }
-    .canvas {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      grid-template-rows: minmax(310px, 1.65fr) minmax(210px, 1fr);
-      gap: 13px;
-      isolation: isolate;
-    }
-    .card {
-      --accent: #1ed760;
-      position: relative;
-      z-index: 0;
-      min-width: 0;
-      padding: clamp(15px, 1.45vw, 23px);
-      overflow: visible;
-      background: var(--card);
-      border: 1px solid var(--line);
-      border-top: 3px solid var(--accent);
-      border-radius: 12px;
-      box-shadow: 0 4px 14px rgb(33 61 44 / 4%);
-      transition: transform .3s ease-in-out, filter .3s ease-in-out, opacity .3s ease-in-out, box-shadow .3s ease-in-out;
-      transform-origin: center;
-    }
-    .card::before { position: absolute; top: 0; right: 0; width: 52px; height: 52px; border-radius: 0 10px 0 100%; background: color-mix(in srgb, var(--accent) 9%, transparent); content: ""; }
-    .card:hover, .card:focus-within, .card.is-active { z-index: 5; transform: scale(1.045); box-shadow: var(--shadow); }
-    .canvas.has-focus .card:not(.is-active) { filter: blur(4px); opacity: .4; }
-    .card h2 { position: relative; display: flex; align-items: center; gap: 10px; margin: 0 0 16px; font-size: clamp(.94rem, 1.2vw, 1.12rem); letter-spacing: -.025em; }
-    .icon { display: grid; flex: 0 0 34px; width: 34px; height: 34px; place-items: center; border-radius: 10px; background: color-mix(in srgb, var(--accent) 13%, white); color: var(--green-dark); }
-    .icon svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-    ul { position: relative; display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
-    li { position: relative; padding-left: 14px; color: #49564f; font-size: clamp(.78rem, .94vw, .91rem); line-height: 1.45; }
-    li::before { position: absolute; top: .61em; left: 0; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); content: ""; }
-    .partners { grid-column: 1; grid-row: 1; --accent: #39a86b; }
-    .activities { grid-column: 2; grid-row: 1; --accent: #51bd83; }
-    .resources { grid-column: 2; grid-row: 1; align-self: end; }
-    .value { grid-column: 3; grid-row: 1; --accent: #1ed760; }
-    .relationships { grid-column: 4; grid-row: 1; --accent: #78c94f; }
-    .channels { grid-column: 4; grid-row: 1; align-self: end; --accent: #8fcf65; }
-    .segments { grid-column: 5; grid-row: 1; --accent: #26a95b; }
-    .costs { grid-column: 1 / span 2; grid-row: 2; --accent: #91a99a; }
-    .revenue { grid-column: 3 / span 3; grid-row: 2; --accent: #1ed760; }
-    .split { height: 48%; }
-    .full { height: 100%; }
-    .economics { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(18px, 4vw, 60px); }
-    footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 15px; color: #829087; font-size: .72rem; }
-    @media (max-width: 920px) {
-      .canvas { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: none; }
-      .card, .partners, .activities, .resources, .value, .relationships, .channels, .segments, .costs, .revenue { grid-column: auto; grid-row: auto; align-self: stretch; }
-      .full, .split { height: auto; min-height: 230px; }
-      .economics { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 560px) {
-      .page { padding: 20px 15px; }
-      header { align-items: start; flex-direction: column; gap: 13px; }
-      .canvas { grid-template-columns: 1fr; gap: 10px; }
-      .full, .split { min-height: auto; }
-      .card { padding: 18px; }
-      .card:hover, .card:focus-within, .card.is-active { transform: scale(1.015); }
-      footer { flex-direction: column; }
-    }
-    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; } }
+    :root{color-scheme:light;--ink:#15251d;--muted:#68766e;--line:#dce6dd;--green:#178448;--lime:#c5f26b;--paper:#f3f6f2;--card:#fff;--shadow:0 20px 55px #153b2726;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+    *{box-sizing:border-box}body{margin:0;min-width:320px;color:var(--ink);background:radial-gradient(ellipse at 8% 0%,#b5ee762b,transparent 34rem),radial-gradient(ellipse at 95% 15%,#bee9d326,transparent 32rem),var(--paper)}
+    .page{width:min(1500px,100%);margin:auto;padding:clamp(22px,4vw,56px)}header{display:flex;align-items:end;justify-content:space-between;gap:28px;margin-bottom:26px}.eyebrow{display:flex;align-items:center;gap:9px;color:var(--green);font-size:.72rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.eyebrow:before{content:"";width:9px;height:9px;background:var(--lime);border:2px solid var(--green);border-radius:50%}h1{margin:10px 0 0;font-size:clamp(2rem,5vw,4rem);line-height:.98;letter-spacing:-.065em}h1 span{color:var(--green)}.intro{max-width:385px;margin:13px 0 0;color:var(--muted);font-size:.95rem;line-height:1.6}.hint{display:flex;align-items:center;gap:10px;max-width:250px;color:var(--muted);font-size:.83rem;line-height:1.45}.hint-mark{display:grid;flex:0 0 32px;width:32px;height:32px;place-items:center;border:1px solid var(--line);border-radius:50%;color:var(--green);font-size:1rem;font-weight:800}
+    .canvas{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));grid-template-rows:minmax(270px,1.35fr) minmax(260px,1fr);gap:12px;isolation:isolate}.card{--accent:#39a86b;position:relative;min-width:0;min-height:0;overflow:hidden;padding:clamp(15px,1.65vw,23px);background:var(--card);border:1px solid var(--line);border-top:3px solid var(--accent);border-radius:15px;box-shadow:0 5px 18px #18382409;transition:box-shadow .25s,border-color .25s,background .25s}.card:hover{box-shadow:0 12px 30px #18382413}.card.is-open{z-index:3;border-color:color-mix(in srgb,var(--accent) 42%,var(--line));box-shadow:var(--shadow);background:linear-gradient(145deg,#fff,color-mix(in srgb,var(--accent) 5%,#fff))}.partners{grid-column:1;grid-row:1;--accent:#39a86b}.activities{grid-column:2;grid-row:1;--accent:#61b97b}.resources{grid-column:2;grid-row:1;align-self:end;--accent:#8ac878}.value{grid-column:3;grid-row:1;--accent:#1c9a53}.relationships{grid-column:4;grid-row:1;--accent:#84bd5e}.channels{grid-column:4;grid-row:1;align-self:end;--accent:#a5c86b}.segments{grid-column:5;grid-row:1;--accent:#269953}.costs{grid-column:1 / span 2;grid-row:2;--accent:#90a99a}.revenue{grid-column:3 / span 3;grid-row:2;--accent:#30a65b}.full{height:100%}.split{height:48%}
+    .toggle{display:flex;width:100%;height:100%;flex-direction:column;align-items:stretch;padding:0;border:0;background:none;color:inherit;text-align:left;font:inherit;cursor:pointer}.toggle:focus-visible{outline:3px solid #168349;outline-offset:5px;border-radius:7px}.card-head{display:flex;align-items:center;gap:11px;margin:0 0 17px}.icon{display:grid;flex:0 0 35px;width:35px;height:35px;place-items:center;border-radius:11px;background:color-mix(in srgb,var(--accent) 14%,white);color:var(--green)}.icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.card h2{margin:0;font-size:clamp(.88rem,1.05vw,1.02rem);line-height:1.2;letter-spacing:-.025em}.number{margin-left:auto;color:#a3aea6;font-size:.68rem;font-weight:800;letter-spacing:.12em}.summary{display:grid;gap:10px;margin:0;padding:0;list-style:none}.summary li{position:relative;padding-left:14px;color:#526057;font-size:clamp(.77rem,.91vw,.88rem);line-height:1.45}.summary li:before{position:absolute;top:.57em;left:0;width:5px;height:5px;border-radius:50%;background:var(--accent);content:""}.teaser{margin:0 0 10px;color:var(--green);font-size:.91rem;font-weight:700;letter-spacing:-.02em}.more{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .34s ease,opacity .25s ease,margin .34s ease;margin-top:0}.more-inner{min-height:0;overflow:hidden}.is-open .more{grid-template-rows:1fr;opacity:1;margin-top:18px}.details{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px;padding-top:16px;border-top:1px solid var(--line)}.details section{min-width:0}.details h3{margin:0 0 7px;color:var(--green);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase}.details ul{display:grid;gap:6px;margin:0;padding:0;list-style:none}.details li{position:relative;padding-left:12px;color:#48564d;font-size:.76rem;line-height:1.45}.details li:before{position:absolute;top:.57em;left:0;width:4px;height:4px;border-radius:50%;background:var(--accent);content:""}.economics{grid-template-columns:1fr 1fr 1fr 1fr}.card-foot{display:flex;align-items:center;gap:6px;margin-top:auto;padding-top:14px;color:#87938a;font-size:.68rem}.card-foot svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.toggle[aria-expanded="true"] .card-foot{color:var(--green)}
+    .floating-panel{position:fixed;z-index:1000;left:var(--start-x);top:var(--start-y);width:var(--start-w);height:var(--start-h);min-height:0!important;align-self:auto!important;padding:clamp(20px,3vw,34px);overflow:hidden;opacity:0;transform:translate(0,0) scale(.96);transition:left .42s cubic-bezier(.2,.75,.25,1),top .42s cubic-bezier(.2,.75,.25,1),width .42s cubic-bezier(.2,.75,.25,1),height .42s cubic-bezier(.2,.75,.25,1),transform .42s cubic-bezier(.2,.75,.25,1),opacity .2s,box-shadow .25s;background:#fff}.floating-panel.is-settled{left:50%;top:50%;width:min(76vw,960px);height:min(76vh,780px);max-width:calc(100vw - 28px);max-height:calc(100vh - 28px);opacity:1;transform:translate(-50%,-50%) scale(1)}.floating-panel .toggle{height:100%;min-height:0;overflow:auto;padding:0 9px 0 0}.floating-panel .card-head{padding-right:42px}.floating-panel .card h2{font-size:clamp(1.15rem,2vw,1.65rem)}.floating-panel .teaser{font-size:1rem}.floating-panel .summary li{font-size:.9rem}.floating-panel .more{grid-template-rows:1fr;opacity:1;margin-top:20px}.floating-panel .more-inner{overflow:visible}.floating-panel .details{gap:20px 30px}.floating-panel .details h3{font-size:.75rem}.floating-panel .details li{font-size:.9rem;line-height:1.55}.floating-panel .close-panel{position:absolute;z-index:2;top:clamp(20px,3vw,34px);right:clamp(20px,3vw,34px);display:grid;width:36px;height:36px;place-items:center;border:1px solid var(--line);border-radius:50%;background:white;color:var(--muted);font-size:1.35rem;cursor:pointer}.floating-panel .close-panel:hover{background:var(--paper);color:var(--ink)}.canvas.has-panel .card:not(.floating-panel){transition:none}.floating-panel.is-closing{opacity:0;transform:scale(.96)}
+    footer{display:flex;justify-content:space-between;gap:12px;margin-top:17px;color:#87938a;font-size:.72rem}.source{color:var(--green);text-decoration:none}.source:hover{text-decoration:underline}
+    @media(max-width:1000px){.canvas{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:none;grid-auto-rows:minmax(240px,auto)}.partners,.activities,.resources,.value,.relationships,.channels,.segments,.costs,.revenue{grid-column:auto;grid-row:auto;align-self:stretch}.partners,.value,.segments{grid-row:span 2}.split,.full{height:auto;min-height:220px}.economics{grid-template-columns:1fr 1fr}}
+    @media(max-width:650px){.page{padding:25px 17px}header{align-items:start;flex-direction:column;gap:15px}.hint{max-width:none}.canvas{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(220px,auto);gap:10px}.partners,.value,.segments{grid-row:span 1}.costs,.revenue{grid-column:span 2}.split,.full{min-height:220px}.card{padding:16px}.details{grid-template-columns:1fr}.economics{grid-template-columns:1fr 1fr}}
+    @media(max-width:420px){.canvas{grid-template-columns:1fr;grid-auto-rows:auto}.partners,.activities,.resources,.value,.relationships,.channels,.segments,.costs,.revenue{grid-column:1;grid-row:auto}.card{min-height:190px}.costs,.revenue{min-height:210px}.economics{grid-template-columns:1fr 1fr}footer{flex-direction:column}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}}
   </style>
 </head>
 <body>
-  <main class="page">
-    <header>
-      <div><div class="eyebrow">Business Model Canvas</div><h1><span>Spotify</span> · modelo de negocio</h1></div>
-      <div class="hint"><span class="hint-mark">↗</span> Pasa el cursor sobre un bloque para enfocarlo</div>
-    </header>
+<main class="page">
+  <header><div><div class="eyebrow">Modelo de negocio · Canvas</div><h1><span>Spotify</span> en nueve bloques</h1><p class="intro">Cómo conecta a oyentes, creadores y anunciantes mediante una plataforma global de audio.</p></div><div class="hint"><span class="hint-mark" aria-hidden="true">↗</span><span>Selecciona cualquier bloque para explorar el modelo con más detalle.</span></div></header>
+  <section class="canvas" aria-label="Business Model Canvas interactivo de Spotify">
+    <article class="card partners full"><button class="toggle" aria-expanded="false" aria-controls="detail-partners"><span class="card-head"><span class="icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3.5 19v-1.2A5.5 5.5 0 0 1 9 12.3h.5a5.5 5.5 0 0 1 5.5 5.5V19M16 13a4.5 4.5 0 0 1 4.5 4.5V19"/></svg></span><h2>Socios clave</h2><span class="number">01</span></span><p class="teaser">El catálogo y el ecosistema que hacen posible el servicio.</p><ul class="summary"><li>Sellos, editoras y distribuidores</li><li>Artistas, autores y podcasters</li><li>Fabricantes y socios tecnológicos</li></ul><span class="more" id="detail-partners"><span class="more-inner"><span class="details"><section><h3>Contenido y derechos</h3><ul><li>Discográficas y titulares de derechos, incluidas Universal, Sony y Warner.</li><li>Editoriales musicales, sociedades de gestión y distribuidores independientes.</li><li>Artistas, podcasters, autores y productores que aportan catálogo y formatos originales.</li></ul></section><section><h3>Plataforma y alcance</h3><ul><li>Google Cloud y otros proveedores de infraestructura, almacenamiento y entrega.</li><li>Fabricantes de teléfonos, automóviles, televisores, consolas y altavoces inteligentes.</li><li>Agencias, marcas y socios de pago que facilitan publicidad, adquisición y cobro.</li></ul></section></span></span></span><span class="card-foot"><svg viewBox="0 0 16 16"><path d="m3 6 5 5 5-5"/></svg><span class="action-label">Ver detalle</span></span></button></article>
+    <article class="card activities split"><button class="toggle" aria-expanded="false" aria-controls="detail-activities"><span class="card-head"><span class="icon"><svg viewBox="0 0 24 24"><path d="M4 19V5m0 14h16M8 15l3-4 3 2 5-7"/></svg></span><h2>Actividades clave</h2><span class="number">02</span></span><p class="teaser">Operar, personalizar y monetizar la experiencia de audio.</p><ul class="summary"><li>Licenciar y distribuir contenido</li><li>Desarrollar producto y recomendaciones</li><li>Vender suscripciones y publicidad</li></ul><span class="more" id="detail-activities"><span class="more-inner"><span class="details"><section><h3>Plataforma y contenido</h3><ul><li>Negociar licencias, gestionar derechos y calcular regalías según los acuerdos.</li><li>Desarrollar y mantener apps, reproducción, búsqueda, streaming y funciones sociales.</li><li>Personalizar recomendaciones, playlists y descubrimiento mediante datos y aprendizaje automático.</li></ul></section><section><h3>Crecimiento y monetización</h3><ul><li>Adquirir y retener usuarios, convertirlos a Premium y ampliar mercados y planes.</li><li>Crear herramientas para creadores y formatos de audio y video.</li><li>Comercializar inventario publicitario y medir campañas para anunciantes.</li></ul></section></span></span></span><span class="card-foot"><svg viewBox="0 0 16 16"><path d="m3 6 5 5 5-5"/></svg><span class="action-label">Ver detalle</span></span></button></article>
+    <article class="card resources split"><button class="toggle" aria-expanded="false" aria-controls="detail-resources"><span class="card-head"><span class="icon"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3"/></svg></span><h2>Recursos clave</h2><span class="number">03</span></span><p class="teaser">Tecnología, catálogo, marca y conocimiento de audiencia.</p><ul class="summary"><li>Plataforma, datos y sistemas de recomendación</li><li>Licencias y catálogo global de audio</li><li>Marca, audiencia y talento especializado</li></ul><span class="more" id="detail-resources"><span class="more-inner"><span class="details"><section><h3>Activos digitales</h3><ul><li>Aplicaciones, infraestructura de streaming y sistemas de búsqueda, pagos y anuncios.</li><li>Modelos de recomendación y señales de escucha que mejoran la personalización.</li><li>Marca reconocida, presencia internacional y relaciones directas con millones de oyentes.</li></ul></section><section><h3>Contenido y capacidades</h3><ul><li>Acceso licenciado a música, podcasts, audiolibros y otros formatos disponibles por mercado.</li><li>Datos, herramientas y servicios para artistas, autores y creadores.</li><li>Equipos de ingeniería, producto, ciencia de datos, derechos, ventas y operaciones.</li></ul></section></span></span></span><span class="card-foot"><svg viewBox="0 0 16 16"><path d="m3 6 5 5 5-5"/></svg><span class="action-label">Ver detalle</span></span></button></article>
+    <article class="card value full"><button class="toggle" aria-expanded="false" aria-controls="detail-value"><span class="card-head"><span class="icon"><svg viewBox="0 0 24 24"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H20v14H6.5A2.5 2.5 0 0 0 4 20.5zM4 6.5v14M8 8h8M8 11h8"/></svg></span><h2>Propuesta de valor</h2><span class="number">04</span></span><p class="teaser">Audio a demanda, adaptado a cada persona y momento.</p><ul class="summary"><li>Música, podcasts y audiolibros en una plataforma</li><li>Plan gratuito o experiencia Premium</li><li>Descubrimiento personalizado y multidispositivo</li></ul><span class="more" id="detail-value"><span class="more-inner"><span class="details"><section><h3>Para oyentes</h3><ul><li>Acceso bajo demanda a un catálogo amplio de música, podcasts y, según el mercado y plan, audiolibros.</li><li>Spotify Free permite escuchar con publicidad; Premium ofrece escucha sin anuncios en música y más control de reproducción.</li><li>Playlists y recomendaciones personalizadas para descubrir artistas y contenido nuevo.</li><li>Experiencia continua entre móvil, escritorio, web, automóvil y dispositivos conectados.</li></ul></section><section><h3>Más flexibilidad</h3><ul><li>Descargas y reproducción sin conexión incluidas en Premium, con disponibilidad según contenido.</li><li>Planes Individual, Duo, Familiar y Estudiante en mercados elegibles.</li><li>Herramientas de publicación, audiencia y monetización para artistas, podcasters y autores.</li><li>Formatos publicitarios y acceso a audiencias segmentadas para marcas.</li></ul></section></span></span></span><span class="card-foot"><svg viewBox="0 0 16 16"><path d="m3 6 5 5 5-5"/></svg><span class="action-label">Ver detalle</span></span></button></article>
+    <article class="card relationships split"><button class="toggle" aria-expanded="false" aria-controls="detail-relationships"><span class="card-head"><span class="icon"><svg viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.5 8.5 0 0 1-3.2-.6L4 20l1.5-3.7A7 7 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z"/></svg></span><h2>Relaciones con clientes</h2><span class="number">05</span></span><p class="teaser">Autoservicio digital con una experiencia personal.</p><ul class="summary"><li>Cuenta y ayuda de autoservicio</li><li>Recomendaciones y comunicación individualizadas</li><li>Planes compartidos y conexión social</li></ul><span class="more" id="detail-relationships"><span class="more-inner"><span class="details"><section><h3>Relación con oyentes</h3><ul><li>Registro, perfil, biblioteca, playlists y gestión de la cuenta desde las aplicaciones.</li><li>Recomendaciones, novedades y resúmenes personalizados basados en hábitos de escucha.</li><li>Centro de ayuda, soporte digital y comunicaciones de producto y suscripción.</li></ul></section><section><h3>Vínculo y comunidad</h3><ul><li>Funciones para compartir música y podcasts, seguir artistas y descubrir actividad social.</li><li>Planes Duo y Familiar con cuentas y recomendaciones individuales.</li><li>Spotify for Artists y herramientas para que creadores comprendan y desarrollen su audiencia.</li></ul></section></span></span></span><span class="card-foot"><svg viewBox="0 0 16 16"><path d="m3 6 5 5 5-5"/></svg><span class="action-label">Ver detalle</span></span></button></article>
+    <article class="card channels split"><button class="toggle" aria-expanded="false" aria-controls="detail-channels"><span class="card-head"><span class="icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4M7 8h.01M10 8h7"/></svg></span><h2>Canales</h2><span class="number">06</span></span><p class="teaser">Apps propias y alianzas que llevan Spotify a cada entorno.</p><ul class="summary"><li>Apps móviles, escritorio y web</li><li>Dispositivos conectados e integraciones</li><li>Web, redes y canales de marketing</li></ul><span class="more" id="detail-channels"><span class="more-inner"><span class="details"><section><h3>Distribución del servicio</h3><ul><li>Aplicaciones para iOS, Android, Windows, macOS y reproductor web.</li><li>Integraciones con televisores, consolas, automóviles, relojes y altavoces inteligentes.</li><li>Spotify Connect facilita controlar la reproducción en dispositivos compatibles.</li></ul></section><section><h3>Descubrimiento y venta</h3><ul><li>Sitio web y páginas de producto para planes, ayuda y gestión de cuenta.</li><li>Tiendas de aplicaciones y socios de telecomunicaciones o dispositivos en algunos mercados.</li><li>Redes sociales, campañas, recomendaciones editoriales y boca a boca para atraer usuarios.</li></ul></section></span></span></span><span class="card-foot"><svg viewBox="0 0 16 16"><path d="m3 6 5 5 5-5"/></svg><span class="action-label">Ver detalle</span></span></button></article>
+    <article class="card segments full"><button class="toggle" aria-expanded="false" aria-controls="detail-segments"><span class="card-head"><span class="icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1a6 6 0 0 1 12 0v1M16 5.5a3 3 0 0 1 0 5.8M18 14a4 4 0 0 1 3 3.9V20"/></svg></span><h2>Segmentos de clientes</h2><span class="number">07</span></span><p class="teaser">Dos lados conectados: quienes escuchan y quienes monetizan.</p><ul class="summary"><li>Oyentes Free y suscriptores Premium</li><li>Artistas, sellos y creadores</li><li>Anunciantes, agencias y editoras</li></ul><span class="more" id="detail-segments"><span class="more-inner"><span class="details"><section><h3>Audiencias de escucha</h3><ul><li>Usuarios gratuitos que acceden al servicio financiado por publicidad.</li><li>Suscriptores Premium Individual, Duo, Familiar y Estudiante, según disponibilidad local.</li><li>Personas que buscan música, podcasts, audiolibros y experiencias de escucha personalizadas.</li></ul></section><section><h3>Clientes y socios profesionales</h3><ul><li>Artistas, sellos y distribuidores que buscan distribución y conexión con fans.</li><li>Podcasters, redes, productoras, autores y editoriales que publican o monetizan contenido.</li><li>Anunciantes, marcas y agencias que compran alcance y formatos publicitarios.</li></ul></section></span></span></span><span class="card-foot"><svg viewBox="0 0 16 16"><path d="m3 6 5 5 5-5"/></svg><span class="action-label">Ver detalle</span></span></button></article>
+    <article class="card costs"><button class="toggle" aria-expanded="false" aria-controls="detail-costs"><span class="card-head"><span class="icon"><svg viewBox="0 0 24 24"><path d="M12 3v18m4-14a4 4 0 0 0-4-2H9a3 3 0 0 0 0 6h6a3 3 0 0 1 0 6h-4a4 4 0 0 1-4-2"/></svg></span><h2>Estructura de costos</h2><span class="number">08</span></span><p class="teaser">El contenido licenciado y la operación tecnológica concentran costos importantes.</p><ul class="summary economics"><li>Regalías y licencias</li><li>Infraestructura y distribución</li><li>Producto, personal y marketing</li><li>Ventas, pagos y administración</li></ul><span class="more" id="detail-costs"><span class="more-inner"><span class="details economics"><section><h3>Contenido y derechos</h3><ul><li>Regalías y costos asociados a licencias musicales, editoriales y otros contenidos.</li></ul></section><section><h3>Tecnología</h3><ul><li>Infraestructura de nube, almacenamiento, redes de entrega, seguridad y pagos.</li></ul></section><section><h3>Operación</h3><ul><li>Personal global de ingeniería, producto, contenido, soporte, ventas y administración.</li></ul></section><section><h3>Crecimiento</h3><ul><li>Marketing, adquisición de usuarios, ventas publicitarias, investigación y expansión de mercado.</li></ul></section></span></span></span><span class="card-foot"><svg viewBox="0 0 16 16"><path d="m3 6 5 5 5-5"/></svg><span class="action-label">Ver detalle</span></span></button></article>
+    <article class="card revenue"><button class="toggle" aria-expanded="false" aria-controls="detail-revenue"><span class="card-head"><span class="icon"><svg viewBox="0 0 24 24"><path d="M4 18V6m0 12h16M8 14l3-3 3 2 5-7"/></svg></span><h2>Fuentes de ingresos</h2><span class="number">09</span></span><p class="teaser">Suscripciones recurrentes y monetización publicitaria del nivel gratuito.</p><ul class="summary economics"><li>Planes Premium</li><li>Publicidad en Free</li><li>Complementos y audiolibros</li><li>Servicios a creadores</li></ul><span class="more" id="detail-revenue"><span class="more-inner"><span class="details economics"><section><h3>Suscripciones</h3><ul><li>Ingresos recurrentes de planes Premium Individual, Duo, Familiar y Estudiante.</li></ul></section><section><h3>Publicidad</h3><ul><li>Anuncios de audio, video y display vendidos en el servicio gratuito y en podcasts.</li></ul></section><section><h3>Contenido adicional</h3><ul><li>En mercados elegibles, ventas de audiolibros y complementos como Audiobooks+.</li></ul></section><section><h3>Creadores</h3><ul><li>Herramientas y servicios vinculados al ecosistema de creadores y monetización publicitaria.</li></ul></section></span></span></span><span class="card-foot"><svg viewBox="0 0 16 16"><path d="m3 6 5 5 5-5"/></svg><span class="action-label">Ver detalle</span></span></button></article>
+  </section>
+  <footer><span>Business Model Canvas · Spotify</span><span><a class="source" href="https://investors.spotify.com/financials/default.aspx" target="_blank" rel="noreferrer">Información financiera</a> · <a class="source" href="https://newsroom.spotify.com/2025-01-02/the-spotify-partner-program-is-here-offering-new-ways-for-creators-in-the-us-uk-canada-and-australia/" target="_blank" rel="noreferrer">Programa para creadores</a> · <a class="source" href="https://newsroom.spotify.com/2025-07-16/audiobooks-brings-more-choice-and-flexibility-to-spotify-premium-subscribers/" target="_blank" rel="noreferrer">Audiolibros y planes</a></span></footer>
+</main>
+<script>
+  const canvas = document.querySelector('.canvas');
+  const cards = [...canvas.querySelectorAll('.card')];
+  let floatingPanel = null;
+  let activeCard = null;
 
-    <section class="canvas" aria-label="Canvas de modelo de negocio de Spotify">
-      <article class="card partners full" tabindex="0">
-        <h2><span class="icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3.5 19v-1.2A5.5 5.5 0 0 1 9 12.3h.5a5.5 5.5 0 0 1 5.5 5.5V19M16 13a4.5 4.5 0 0 1 4.5 4.5V19"/></svg></span>Socios clave</h2>
-        <ul><li>Discográficas: Universal, Sony y Warner</li><li>Artistas independientes</li><li>Distribuidoras musicales</li><li>Proveedores de nube e infraestructura: GCP / AWS</li></ul>
-      </article>
+  function closePanel(animate = true) {
+    if (!floatingPanel) return;
+    const panel = floatingPanel;
+    const origin = activeCard;
+    floatingPanel = null;
+    activeCard = null;
+    canvas.classList.remove('has-panel');
+    if (origin) origin.querySelector('.toggle').setAttribute('aria-expanded', 'false');
+    if (!animate || !origin) { panel.remove(); return; }
+    const rect = origin.getBoundingClientRect();
+    panel.classList.remove('is-settled');
+    panel.style.setProperty('--start-x', `${rect.left}px`);
+    panel.style.setProperty('--start-y', `${rect.top}px`);
+    panel.style.setProperty('--start-w', `${rect.width}px`);
+    panel.style.setProperty('--start-h', `${rect.height}px`);
+    panel.classList.add('is-closing');
+    window.setTimeout(() => panel.remove(), 440);
+  }
 
-      <article class="card activities split" tabindex="0">
-        <h2><span class="icon"><svg viewBox="0 0 24 24"><path d="M4 19V5m0 14h16M8 15l3-4 3 2 5-7"/></svg></span>Actividades clave</h2>
-        <ul><li>Desarrollo de algoritmos de recomendación</li><li>Negociación de licencias</li><li>Mantenimiento de aplicaciones y marketing</li></ul>
-      </article>
-      <article class="card resources split" tabindex="0">
-        <h2><span class="icon"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3"/></svg></span>Recursos clave</h2>
-        <ul><li>Catálogo de más de 100 M de canciones y podcasts</li><li>IA y algoritmos: Discover Weekly</li><li>Marca Spotify y datos de escucha</li></ul>
-      </article>
+  function openPanel(card) {
+    if (activeCard === card) { closePanel(); return; }
+    closePanel(false);
+    const rect = card.getBoundingClientRect();
+    const panel = card.cloneNode(true);
+    panel.classList.add('floating-panel', 'is-open');
+    panel.classList.remove('full', 'split');
+    panel.style.setProperty('--start-x', `${rect.left}px`);
+    panel.style.setProperty('--start-y', `${rect.top}px`);
+    panel.style.setProperty('--start-w', `${rect.width}px`);
+    panel.style.setProperty('--start-h', `${rect.height}px`);
+    panel.querySelectorAll('[id]').forEach(element => element.removeAttribute('id'));
+    const button = panel.querySelector('.toggle');
+    button.setAttribute('aria-expanded', 'true');
+    button.removeAttribute('aria-controls');
+    panel.querySelector('.action-label').textContent = 'Contraer detalle';
+    const closeButton = document.createElement('button');
+    closeButton.className = 'close-panel';
+    closeButton.type = 'button';
+    closeButton.setAttribute('aria-label', 'Cerrar detalle');
+    closeButton.textContent = '×';
+    panel.append(closeButton);
+    closeButton.addEventListener('click', event => { event.stopPropagation(); closePanel(); });
+    button.addEventListener('click', event => { event.preventDefault(); closePanel(); });
+    canvas.append(panel);
+    card.querySelector('.toggle').setAttribute('aria-expanded', 'true');
+    floatingPanel = panel;
+    activeCard = card;
+    canvas.classList.add('has-panel');
+    requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.add('is-settled')));
+  }
 
-      <article class="card value full" tabindex="0">
-        <h2><span class="icon"><svg viewBox="0 0 24 24"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H20v14H6.5A2.5 2.5 0 0 0 4 20.5zM4 6.5v14M8 8h8M8 11h8"/></svg></span>Propuesta de valor</h2>
-        <ul><li>Acceso a música y podcasts bajo demanda en cualquier dispositivo</li><li>Descubrimiento y recomendaciones personalizadas</li><li>Opción gratuita con anuncios o experiencia Premium</li></ul>
-      </article>
-
-      <article class="card relationships split" tabindex="0">
-        <h2><span class="icon"><svg viewBox="0 0 24 24"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.5 8.5 0 0 1-3.2-.6L4 20l1.5-3.7A7 7 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z"/></svg></span>Relaciones con clientes</h2>
-        <ul><li>Autoservicio y atención automatizada</li><li>Personalización mediante recomendaciones</li><li>Engagement y comunidad en redes sociales</li></ul>
-      </article>
-      <article class="card channels split" tabindex="0">
-        <h2><span class="icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4M7 8h.01M10 8h7"/></svg></span>Canales</h2>
-        <ul><li>Aplicaciones móviles y de escritorio</li><li>Web Player</li><li>Integraciones en autos y altavoces inteligentes</li></ul>
-      </article>
-
-      <article class="card segments full" tabindex="0">
-        <h2><span class="icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1a6 6 0 0 1 12 0v1M16 5.5a3 3 0 0 1 0 5.8M18 14a4 4 0 0 1 3 3.9V20"/></svg></span>Segmentos de clientes</h2>
-        <ul><li>Usuarios de cuenta gratuita</li><li>Suscriptores Premium</li><li>Creadores y artistas</li><li>Anunciantes y marcas</li></ul>
-      </article>
-
-      <article class="card costs" tabindex="0">
-        <h2><span class="icon"><svg viewBox="0 0 24 24"><path d="M12 3v18m4-14a4 4 0 0 0-4-2H9a3 3 0 0 0 0 6h6a3 3 0 0 1 0 6h-4a4 4 0 0 1-4-2"/></svg></span>Estructura de costos</h2>
-        <ul class="economics"><li>Regalías a discográficas y artistas</li><li>Infraestructura de servidores y distribución</li><li>I+D, producto y tecnología</li><li>Personal, ventas y marketing</li></ul>
-      </article>
-      <article class="card revenue" tabindex="0">
-        <h2><span class="icon"><svg viewBox="0 0 24 24"><path d="M4 18V6m0 12h16M8 14l3-3 3 2 5-7"/></svg></span>Fuentes de ingresos</h2>
-        <ul class="economics"><li>Suscripciones mensuales Premium</li><li>Publicidad en el plan gratuito (Freemium)</li></ul>
-      </article>
-    </section>
-    <footer><span>Canvas clásico · 9 bloques</span><span>Prototipo interactivo · Spotify</span></footer>
-  </main>
-  <script>
-    const canvas = document.querySelector('.canvas');
-    const cards = [...canvas.querySelectorAll('.card')];
-    cards.forEach(card => {
-      card.addEventListener('mouseenter', () => { canvas.classList.add('has-focus'); cards.forEach(item => item.classList.toggle('is-active', item === card)); });
-      card.addEventListener('mouseleave', () => requestAnimationFrame(() => {
-        const focused = cards.find(item => item.matches(':hover') || document.activeElement === item);
-        cards.forEach(item => item.classList.toggle('is-active', item === focused));
-        canvas.classList.toggle('has-focus', Boolean(focused));
-      }));
-      card.addEventListener('focusin', () => { canvas.classList.add('has-focus'); cards.forEach(item => item.classList.toggle('is-active', item === card)); });
-      card.addEventListener('focusout', () => requestAnimationFrame(() => {
-        const focused = cards.find(item => item.matches(':hover') || document.activeElement === item);
-        cards.forEach(item => item.classList.toggle('is-active', item === focused));
-        canvas.classList.toggle('has-focus', Boolean(focused));
-      }));
-    });
-  </script>
+  cards.forEach(card => card.querySelector('.toggle').addEventListener('click', () => openPanel(card)));
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && floatingPanel) closePanel();
+  });
+</script>
 </body>
 </html>
