@@ -30,6 +30,9 @@ Las versiones interactivas de las prácticas están disponibles en GitHub Pages:
 |---|---|
 | 02 | [Diagrama de arquitectura](https://jonathan2536.github.io/Integradora_230318/Practica2/) |
 | 03 | [Model Canvas de Spotify](https://jonathan2536.github.io/Integradora_230318/Practica3/spotify_canvas.html) |
+| 04 | Bussines Model Canvas Interactivo  del Proyecto Integrador |
+| 05 | Diagrama de Roles de Usuario para Proyecto Integrador |
+
 
 ## Estructura del repositorio
 

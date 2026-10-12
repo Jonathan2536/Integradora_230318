@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Práctica 06 - Spotify Screen Flow Diagram (Canvas Based)</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #181818;
+            --card-hover: #282828;
+            --spotify-green: #1DB954;
+            --accent-cyan: #00d2c8;
+            --accent-blue: #2d5be3;
+            --accent-purple: #8d43ce;
+            --text-main: #FFFFFF;
+            --text-muted: #B3B3B3;
+            --border-color: #282828;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'CircularStd', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 24px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        header h1 {
+            color: var(--spotify-green);
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .meta-info {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: rgba(29, 185, 84, 0.15);
+            color: var(--spotify-green);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            border: 1px solid var(--spotify-green);
+            font-weight: 600;
+        }
+
+        .tag.blue {
+            background: rgba(45, 91, 227, 0.15);
+            color: #5d82f2;
+            border-color: #5d82f2;
+        }
+
+        .tag.purple {
+            background: rgba(141, 67, 206, 0.15);
+            color: #b173e8;
+            border-color: #b173e8;
+        }
+
+        /* Tabs System */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: var(--card-bg);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover, .tab-btn.active {
+            background-color: var(--spotify-green);
+            color: #000;
+            border-color: var(--spotify-green);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Diagrams Flow View */
+        .flow-container {
+            background-color: var(--card-bg);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        .flow-title {
+            color: var(--spotify-green);
+            font-size: 1.3rem;
+            margin-bottom: 18px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .sequence-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .flow-step {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #121212;
+            padding: 14px 18px;
+            border-radius: 8px;
+            border-left: 4px solid var(--spotify-green);
+        }
+
+        .flow-step.creator {
+            border-left-color: var(--accent-purple);
+        }
+
+        .flow-step.shared {
+            border-left-color: var(--accent-blue);
+        }
+
+        .step-number {
+            font-weight: bold;
+            background: var(--border-color);
+            color: var(--text-main);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.85rem;
+        }
+
+        .step-info h4 {
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        .step-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Screen Grid View */
+        .screens-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 20px;
+        }
+
+        .mobile-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .mobile-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--spotify-green);
+        }
+
+        .mobile-card-header {
+            padding: 12px 15px;
+            background-color: #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .mobile-card-header h3 {
+            font-size: 0.9rem;
+            color: var(--text-main);
+            font-weight: 700;
+        }
+
+        .mobile-screen-body {
+            padding: 14px;
+            min-height: 310px;
+            background-color: #121212;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Sketch UI Elements */
+        .sketch-box {
+            border: 1px dashed #404040;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .sketch-btn {
+            background-color: var(--spotify-green);
+            color: #000;
+            text-align: center;
+            padding: 8px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: bold;
+        }
+
+        .sketch-btn.purple { background-color: var(--accent-purple); color: #fff; }
+        .sketch-btn.blue { background-color: var(--accent-blue); color: #fff; }
+
+        .sketch-input {
+            border: 1px solid #333;
+            background: #242424;
+            padding: 8px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .sketch-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .sketch-card-item {
+            background: #181818;
+            border: 1px solid #282828;
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+        }
+
+        .mobile-card-footer {
+            padding: 10px 15px;
+            background-color: #000;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Archify Code Box */
+        .archify-box {
+            background-color: #050505;
+            border: 1px solid var(--spotify-green);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #1DB954;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            max-height: 500px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Práctica 06: Diagrama de Secuencia de Pantallas (Spotify)</h1>
+        <p>Plataforma Elección: <strong>Spotify App Móvil (Free / Premium / Creators)</strong></p>
+        <div class="meta-info">
+            <span class="tag">16 Pantallas Totales</span>
+            <span class="tag blue">Rol 1: Oyente (Free/Premium)</span>
+            <span class="tag purple">Rol 2: Artista / Creador</span>
+            <span class="tag">Modelo Canvas Integrado</span>
+        </div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('sketches')">Bocetos / Sketches (16 Pantallas)</button>
+        <button class="tab-btn" onclick="switchTab('sequence')">Diagramas de Secuencia / Flujos</button>
+        <button class="tab-btn" onclick="switchTab('archify')">Código / Prompt para Archify Agent</button>
+    </div>
+
+    <!-- TAB 1: SKETCHES DE PANTALLAS -->
+    <div id="sketches" class="tab-content active">
+        <div class="screens-grid">
+
+            <!-- P01: Login -->
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <h3>P01: Login / Inicio Sesión</h3>
+                    <span class="tag blue">Compartida</span>
+                </div>
+                <div class="mobile-screen-body">
+                    <div class="sketch-box" style="height: 50px; font-weight:bold; color:#1DB954;">LOGO SPOTIFY</div>
+                    <div class="sketch-input">Correo o Nombre de usuario</div>
+                    <div class="sketch-input">Contraseña</div>
+                    <div class="sketch-btn">Iniciar Sesión</div>
+                    <div class="sketch-btn blue">Continuar con Google / Apple</div>
+                    <div class="sketch-row" style="justify-content: space-between;">
+                        <span style="font-size:0.68rem; color:var(--text-muted);">¿Olvidó datos? (P03)</span>
+                        <span style="font-size:0.68rem; color:var(--spotify-green);">Registrarse (P02)</span>
+                    </div>
+                </div>
+                <div class="mobile-card-footer">Autenticación cliente multidispositivo</div>
+            </div>
+
+            <!-- P02: Registro -->
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <h3>P02: Registro de Usuario</h3>
+                    <span class="tag blue">Compartida</span>
+                </div>
+                <div class="mobile-screen-body">
+                    <div class="sketch-box">Crear Cuenta Gratis</div>
+                    <div class="sketch-input">¿Cómo quieres que te llamemos?</div>
+                    <div class="sketch-input">Correo Electrónico</div>
+                    <div class="sketch-input">Crear Contraseña</div>
+                    <div class="sketch-box" style="border-color: var(--accent-purple);">
+                        Seleccionar Perfil Principal:<br>
+                        ( ) Oyente (Escuchar música/podcasts)<br>
+                        ( ) Creador / Artista (Subir contenido)
+                    </div>
+                    <div class="sketch-btn">Crear Cuenta -> P05/P13</div>
+                </div>
+                <div class="mobile-card-footer">Alta en base de datos global Spotify</div>
+            </div>
+
+            <!-- P03: Recuperar Contraseña -->
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <h3>P03: Recuperar Pass</h3>
+                    <span class="tag blue">Compartida</span>
+                </div>
+                <div class="mobile-screen-body">
+                    <div class="sketch-box">Restablecer Contraseña</div>
+                    <p style="font-size: 0.72rem; color: var(--text-muted);">Ingresa tu correo o usuario y te enviaremos un enlace de acceso.</p>
+                    <div class="sketch-input">Correo / Usuario</div>
+                    <div class="sketch-btn">Enviar Enlace</div>
+                    <div class="sketch-btn" style="background:#333; color:#fff;">Volver al Login (P01)</div>
+                </div>
+                <div class="mobile-card-footer">Servicio de autoservicio digital</div>
+            </div>
+
+            <!-- P04: Perfil y Ajustes -->
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <h3>P04: Perfil y Ajustes</h3>
+                    <span class="tag blue">Compartida</span>
+                </div>
+                <div class="mobile-screen-body">
+                    <div class="sketch-row" style="align-items: center;">
+                        <div class="sketch-box" style="width: 45px; height: 45px; border-radius: 50%;">Foto</div>
+                        <div>
+                            <strong style="font-size: 0.8rem;">Usuario Spotify</strong><br>
+                            <span style="font-size: 0.7rem; color: var(--spotify-green);">Plan Premium / Free</span>
+                        </div>
+                    </div>
+                    <div class="sketch-card-item">Calidad de Audio (Streaming / Descarga)</div>
+                    <div class="sketch-card-item">Dispositivos Conectados (Spotify Connect)</div>
+                    <div class="sketch-card-item">Ahorro de Datos & Social Jam</div>
+                    <div class="sketch-btn" style="background:#e91e63; color:#fff;">Cerrar Sesión -> P01</div>
+                </div>
+                <div class="mobile-card-footer">Ajustes generales de la app móvil</div>
+            </div>
+
+            <!-- P05: Home / Inicio -->
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <h3>P05: Home / Inicio</h3>
+                    <span class="tag blue">Oyente</span>
+                </div>
+                <div class="mobile-screen-body">
+                    <div class="sketch-row">
+                        <div class="sketch-btn" style="padding:4px; font-size:0.65rem; flex:1;">Música</div>
+                        <div class="sketch-btn" style="padding:4px; font-size:0.65rem; flex:1; background:#333; color:#fff;">Podcasts</div>
+                        <div class="sketch-btn" style="padding:4px; font-size:0.65rem; flex:1; background:#333; color:#fff;">Audiolibros</div>
+                    </div>
+                    <div class="sketch-card-item">
+                        <strong>Escuchado recientemente:</strong><br>
+                        • Discover Weekly | • Daily Mix 1
+                    </div>
+                    <div class="sketch-card-item" style="border-color:var(--spotify-green);">
+                        <strong>Recomendado para ti:</strong><br>
+                        Nuevos lanzamientos de tus artistas
+                    </div>
+                    <div class="sketch-row">
+                        <div class="sketch-btn blue" style="flex:1;">Buscar (P06)</div>
+                        <div class="sketch-btn purple" style="flex:1;">Mi Librería (P08)</div>
+                    </div>
+                </div>
+                <div class="mobile-card-footer">Motor de recomendación e IA</div>
+            </div>
+
+            <!-- P06: Buscador y Explorar -->
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <h3>P06: Buscador & Explora</h3>
+                    <span class="tag blue">Oyente</span>
+                </div>
+                <div class="mobile-screen-body">
+                    <div class="sketch-input">🔍 ¿Qué quieres escuchar hoy?</div>
+                    <div class="sketch-box">Explorar Categorías</div>
+                    <div class="sketch-row">
+                        <div class="sketch-card-item" style="flex:1; background:#8400e7;">Pop</div>
+                        <div class="sketch-card-item" style="flex:1; background:#e1118c;">Rock</div>
+                    </div>
+                    <div class="sketch-row">
+                        <div class="sketch-card-item" style="flex:1; background:#006450;">Podcasts</div>
+                        <div class="sketch-card-item" style="flex:1; background:#e91e63;">Audiolibros</div>
+                    </div>
+                </div>
+                <div class="mobile-card-footer">Catálogo global a demanda</div>
+            </div>
+
+            <!-- P07: Reproductor Principal -->
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <h3>P07: Now Playing (Player)</h3>
+                    <span class="tag blue">Oyente</span>
+                </div>
+                <div class="mobile-screen-body">
+                    <div class="sketch-box" style="height: 100px;">Carátula del Álbum / Podcast</div>
+                    <div style="text-align:center;">
+                        <strong style="font-size:0.85rem;">Nombre de la Canción</strong><br>
+                        <span style="font-size:0.7rem; color:var(--text-muted);">Artista / Creador</span>
+                    </div>
+                    <div class="sketch-box">Progress Bar (02:15 / 03:45)</div>
+                    <div class="sketch-row" style="justify-content:center; gap:10px;">
+                        <span>⏮</span> <span style="color:var(--spotify-green); font-size:1.2rem;">⏸</span> <span>⏭</span>
+                    </div>
+                    <div class="sketch-row">
+                        <div class="sketch-btn" style="flex:1; font-size:0.65rem;" onclick="alert('Ir a P12')">Letras (P12)</div>
+                        <div class="sketch-btn blue" style="flex:1; font-size:0.65rem;">Connect</div>
+                    </div>
+                </div>
+                <div class="mobile-card-footer">Control de streaming en tiempo real</div>
+            </div>
+
+            <!-- P08: Tu Biblioteca -->
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <h3>P08: Tu Biblioteca</h3>
+                    <span class="tag blue">Oyente</span>
+                </div>
+                <div class="mobile-screen-body">
+                    <div class="sketch-row">
+                        <span style="font-size:0.8rem; font-weight:bold;">Tu Biblioteca</span>
+                        <span style="font-size:0.8rem; color:var(--spotify-green);">+ Crear</span>
+                    </div>
+                    <div class="sketch-card-item">
+                        💚 <strong>Tus me gusta</strong> (342 canciones)
+                    </div>
+                    <div class="sketch-card-item">
+                        🎙 <strong>Tus podcasts guardados</strong> (12 shows)
+                    </div>
+                    <div class="sketch-card-item">
+                        📚 <strong>Audiolibros adquiridos</strong> (2 libros)
+                    </div>
+                </div>
+                <div class="mobile-card-footer">Organización personal de contenido</div>
+            </div>
+
+            <!-- P09: Playlist / Álbum -->
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <h3>P09: Playlist / Álbum</h3>
+                    <span class="tag blue">Oyente</span>
+                </div>
+                <div class="mobile-screen-body">
+                    <div class="sketch-row">
+                        <div class="sketch-box" style="width: 50px; height: 50px;">Cover</div>
+                        <div>
+                            <strong style="font-size:0.8rem;">Top Hits México</strong><br>
+                            <span style="font-size:0.7rem; color:var(--text-muted);">Spotify • 2.4M Likes</span>
+                        </div>
+                    </div>
+                    <div class="sketch-btn" style="width: 40px; height: 40px; border-radius: 50%; float:right;">▶</div>
+                    <div class="sketch-card-item">1. Canción Exitosas - Artista Top</div>
+                    <div class="sketch-card-item">2. Tema Trending - Artista 2</div>
+                    <div class="sketch-card-item">3. Colaboración - Creador 3</div>
+                </div>
+                <div class="mobile-card-footer">Lista de reproducción interactiva</div>
+            </div>
+
+            <!-- P10: Detalle Podcast / Audiolibro -->
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <h3>P10: Podcast / Audiolibro</h3>
+                    <span class="tag blue">Oyente</span>
+                </div>
+                <div class="mobile-screen-body">
+                    <div class="sketch-box">Ficha de Podcast / Audiolibro</div>
+                    <div class="sketch-card-item">
+                        <strong>Episodio 42: Historia de la Música</strong><br>
+                        Duración: 45 min | Velocidad: 1.0x
+                    </div>
+                    <div class="sketch-btn">▶ Reproducir Episodio -> P07</div>
+                    <div class="sketch-card-item">
+                        📄 Notas del Episodio & Capítulos
+                    </div>
+                </div>
+                <div class="mobile-card-footer">Contenido de audio hablado</div>
+            </div>
+
+            <!-- P11: Suscripción Premium -->
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <h3>P11: Plan Premium</h3>
+                    <span class="tag blue">Oyente</span>
+                </div>
+                <div class="mobile-screen-body">
+                    <div class="sketch-box" style="border-color: var(--spotify-green);">
+                        <strong>Pásate a Premium</strong><br>
+                        • Música sin anuncios<br>
+                        • Descarga para escuchar offline<br>
+                        • Salta canciones ilimitadamente
+                    </div>
+                    <div class="sketch-card-item">
+                        Plan Individual: $129 MXN/mes
+                    </div>
+                    <div class="sketch-card-item">
+                        Plan Familiar / Estudiantes
+                    </div>
+                    <div class="sketch-btn">Obtener Premium</div>
+                </div>
+                <div class="mobile-card-footer">Fuente de ingresos recurrente (Canvas)</div>
+            </div>
+
+            <!-- P12: Letras y Social Jam -->
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <h3>P12: Letras & Jam</h3>
+                    <span class="tag blue">Oyente</span>
+                </div>
+                <div class="mobile-screen-body">
+                    <div class="sketch-box" style="background:#282828;">
+                        <p style="font-size:0.75rem; color:#fff;">Letra en tiempo real:</p>
+                        <p style="font-size:0.8rem; color:var(--spotify-green); font-weight:bold;">"I'm on the right track, baby..."</p>
+                    </div>
+                    <div class="sketch-card-item">
+                        👥 <strong>Spotify Jam Activo</strong><br>
+                        3 amigos unidos a la sesión
+                    </div>
+                    <div class="sketch-btn blue">Invitar amigos a la sesión</div>
+                </div>
+                <div class="mobile-card-footer">Experiencia social e interactiva</div>
+            </div>
+
+            <!-- P13: Dashboard Creador -->
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <h3>P13: Home Creador</h3>
+                    <span class="tag purple">Artista / Creador</span>
+                </div>
+                <div class="mobile-screen-body">
+                    <div class="sketch-box" style="border-color:var(--accent-purple);">
+                        <strong>Spotify for Artists / Podcasters</strong><br>
+                        Oyentes Mensuales: 452,120 <span style="color:var(--spotify-green);">▲ 12%</span>
+                    </div>
+                    <div class="sketch-btn purple">Nuevo Lanzamiento (P14)</div>
+                    <div class="sketch-btn blue">Analítica de Audiencia (P15)</div>
+                    <div class="sketch-btn">Monetización y Regalías (P16)</div>
+                </div>
+                <div class="mobile-card-footer">Gestión para artistas y podcasters</div>
+            </div>
+
+            <!-- P14: Subir / Lanzamientos -->
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <h3>P14: Gestor Lanzamientos</h3>
+                    <span class="tag purple">Artista / Creador</span>
+                </div>
+                <div class="mobile-screen-body">
+                    <div class="sketch-box">Subir Audio (Sencillo, Episodio, Libro)</div>
+                    <div class="sketch-input">Título del Lanzamiento</div>
+                    <div class="sketch-input">Género / Categoría</div>
+                    <div class="sketch-box">Cargar Arte de Portada (3000x3000px)</div>
+                    <div class="sketch-btn purple">Programar / Publicar</div>
+                </div>
+                <div class="mobile-card-footer">Distribución en el catálogo global</div>
+            </div>
+
+            <!-- P15: Analítica Audiencia -->
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <h3>P15: Analítica Creador</h3>
+                    <span class="tag purple">Artista / Creador</span>
+                </div>
+                <div class="mobile-screen-body">
+                    <div class="sketch-box">Estadísticas de Audiencia</div>
+                    <div class="sketch-card-item">
+                        <strong>Top Ciudades:</strong><br>
+                        1. CDMX | 2. Madrid | 3. Bogotá
+                    </div>
+                    <div class="sketch-card-item">
+                        <strong>Demografía:</strong><br>
+                        18-24 años (54%) | 25-34 años (32%)
+                    </div>
+                    <div class="sketch-box">Gráfica de Retención de Oyentes</div>
+                </div>
+                <div class="mobile-card-footer">Datos de inteligencia de mercado</div>
+            </div>
+
+            <!-- P16: Monetización y Regalías -->
+            <div class="mobile-card">
+                <div class="mobile-card-header">
+                    <h3>P16: Monetización</h3>
+                    <span class="tag purple">Artista / Creador</span>
+                </div>
+                <div class="mobile-screen-body">
+                    <div class="sketch-box" style="border-color:var(--spotify-green);">
+                        <strong>Balance Estimado</strong><br>
+                        $3,420.50 USD
+                    </div>
+                    <div class="sketch-card-item">
+                        Regalías de Streams (Prem / Free)
+                    </div>
+                    <div class="sketch-card-item">
+                        Patrocinios de Podcasts / Suscripciones
+                    </div>
+                    <div class="sketch-btn purple">Campañas de Promoción (Marquee)</div>
+                </div>
+                <div class="mobile-card-footer">Flujo de servicios e ingresos de creadores</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- TAB 2: DIAGRAMAS DE SECUENCIA Y FLUJOS -->
+    <div id="sequence" class="tab-content">
+        
+        <!-- SECUENCIA ROL 1: OYENTE -->
+        <div class="flow-container">
+            <h3 class="flow-title">Flujo de Secuencia - Rol 1: Oyente (Free / Premium)</h3>
+            <div class="sequence-diagram">
+                <div class="flow-step shared">
+                    <div class="step-number">1</div>
+                    <div class="step-info">
+                        <h4>P01: Login &rarr; P02: Registro &rarr; P03: Recuperación</h4>
+                        <p>El oyente se autentica en la plataforma. Si es usuario nuevo, crea su perfil en P02 seleccionando el rol de Oyente.</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">2</div>
+                    <div class="step-info">
+                        <h4>P05: Home / Inicio</h4>
+                        <p>Pantalla principal personalizada por el motor de recomendaciones con música, podcasts y audiolibros.</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">3a</div>
+                    <div class="step-info">
+                        <h4>P06: Buscador &rarr; P09 / P10: Detalle de Contenido &rarr; P07: Now Playing Player</h4>
+                        <p>El oyente busca un artista, playlist o show. Al seleccionar un ítem, abre la vista de contenido y reproduce el audio en el reproductor principal (P07).</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">3b</div>
+                    <div class="step-info">
+                        <h4>P07: Player &rarr; P12: Letras y Jam Social</h4>
+                        <p>Desde el reproductor en tiempo real, el oyente despliega las letras sincronizadas o inicia una sesión grupal (Spotify Jam).</p>
+                    </div>
+                </div>
+                <div class="flow-step">
+                    <div class="step-number">3c</div>
+                    <div class="step-info">
+                        <h4>P08: Tu Biblioteca &rarr; P11: Suscripción Premium</h4>
+                        <p>El oyente organiza sus guardados. Si intenta descargar contenido siendo usuario Free, es dirigido a P11 para convertirse en Premium.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECUENCIA ROL 2: CREADOR / ARTISTA -->
+        <div class="flow-container">
+            <h3 class="flow-title">Flujo de Secuencia - Rol 2: Artista / Creador (Spotify for Artists/Podcasters)</h3>
+            <div class="sequence-diagram">
+                <div class="flow-step shared">
+                    <div class="step-number">1</div>
+                    <div class="step-info">
+                        <h4>P01 / P02: Autenticación de Creador</h4>
+                        <p>Ingreso a la app con perfil verificado de artista, sello discográfico o podcaster.</p>
+                    </div>
+                </div>
+                <div class="flow-step creator">
+                    <div class="step-number">2</div>
+                    <div class="step-info">
+                        <h4>P13: Home Creador (Dashboard)</h4>
+                        <p>Panel central que consolida el desempeño general del perfil, oyentes mensuales y accesos rápidos.</p>
+                    </div>
+                </div>
+                <div class="flow-step creator">
+                    <div class="step-number">3a</div>
+                    <div class="step-info">
+                        <h4>P14: Gestor de Lanzamientos</h4>
+                        <p>Carga de archivos de audio, portadas, metadatos y programación de fechas de publicación.</p>
+                    </div>
+                </div>
+                <div class="flow-step creator">
+                    <div class="step-number">3b</div>
+                    <div class="step-info">
+                        <h4>P15: Analítica de Audiencia</h4>
+                        <p>Consulta de datos demográficos, fuentes de tráfico (playlists oficiales vs. de usuarios) y mapas de calor de reproducciones.</p>
+                    </div>
+                </div>
+                <div class="flow-step creator">
+                    <div class="step-number">3c</div>
+                    <div class="step-info">
+                        <h4>P16: Monetización y Regalías</h4>
+                        <p>Auditoría de ingresos generados por reproducciones, patrocinios y configuración de campañas promocionales en la plataforma.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TAB 3: PROMPT / SPEC FOR ARCHIFY AGENT -->
+    <div id="archify" class="tab-content">
+        <div class="flow-container">
+            <h3 class="flow-title">Especificación Estandarizada para Agente Archify</h3>
+            <p style="margin-bottom: 15px; color: var(--text-muted); font-size: 0.9rem;">
+                Copia este objeto JSON y proporciónalo al Agente de Archify para construir el diagrama interactivo de secuencia de pantallas (UX Flow Diagram):
+            </p>
+            <div class="archify-box">
+{
+  "project": "Spotify Mobile Platform Experience",
+  "canvas_reference": "Spotify en Nueve Bloques",
+  "total_screens": 16,
+  "roles": [
+    {
+      "id": "ROLE_LISTENER",
+      "name": "Oyente (Free / Premium)",
+      "entry_point": "P01_Login"
+    },
+    {
+      "id": "ROLE_CREATOR",
+      "name": "Artista / Creador de Contenido",
+      "entry_point": "P01_Login"
+    }
+  ],
+  "screens": [
+    {"id": "P01", "name": "Login / Inicio Sesion", "type": "shared", "routes": ["P02", "P03", "P05", "P13"]},
+    {"id": "P02", "name": "Registro de Usuario", "type": "shared", "routes": ["P01"]},
+    {"id": "P03", "name": "Recuperar Contrasena", "type": "shared", "routes": ["P01"]},
+    {"id": "P04", "name": "Perfil de Usuario y Ajustes", "type": "shared", "routes": ["P01"]},
+    {"id": "P05", "name": "Home / Inicio Oyente", "role": "ROLE_LISTENER", "routes": ["P06", "P07", "P08", "P11", "P04"]},
+    {"id": "P06", "name": "Buscador y Explorar", "role": "ROLE_LISTENER", "routes": ["P09", "P10", "P05"]},
+    {"id": "P07", "name": "Now Playing Player", "role": "ROLE_LISTENER", "routes": ["P12", "P05"]},
+    {"id": "P08", "name": "Tu Biblioteca", "role": "ROLE_LISTENER", "routes": ["P09", "P10", "P11"]},
+    {"id": "P09", "name": "Vista Playlist / Album", "role": "ROLE_LISTENER", "routes": ["P07", "P08"]},
+    {"id": "P10", "name": "Detalle Podcast / Audiolibro", "role": "ROLE_LISTENER", "routes": ["P07", "P08"]},
+    {"id": "P11", "name": "Suscripcion Premium Upsell", "role": "ROLE_LISTENER", "routes": ["P05"]},
+    {"id": "P12", "name": "Letras y Social Jam", "role": "ROLE_LISTENER", "routes": ["P07"]},
+    {"id": "P13", "name": "Home Dashboard Creador", "role": "ROLE_CREATOR", "routes": ["P14", "P15", "P16", "P04"]},
+    {"id": "P14", "name": "Gestor de Lanzamientos", "role": "ROLE_CREATOR", "routes": ["P13"]},
+    {"id": "P15", "name": "Analitica de Audiencia", "role": "ROLE_CREATOR", "routes": ["P13"]},
+    {"id": "P16", "name": "Monetizacion y Regalias", "role": "ROLE_CREATOR", "routes": ["P13"]}
+  ]
+}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+    </script>
+</body>
+</html>
